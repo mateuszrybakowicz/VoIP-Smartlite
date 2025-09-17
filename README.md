@@ -7,3 +7,4 @@ najnowszy release na PC. Rozpakowac go, zaktualizowac plik config.ini (ustawic p
 ...\dist\gstreamer\bin.  
 \
 aby wlaczyc aplikacje, nalezy uruchumic run_VoIP.bat i zezwolic na wszystko co tam chca
+aplikacja przetestowana z wpietym headsetem poprzez SoundBlastera usb
