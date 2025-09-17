@@ -3,5 +3,7 @@
 3. sudo apt-get install libgstrtspserver-1.0-dev lub jak nie zadziala to sudo apt-get install libgstreamer-rtsp-server-1.0-dev
 5. git clone https://github.com/mateuszrybakowicz/VoIP-Smartlite.git
 6. cd VoIP-Smartlite/rpi
-7. make
-8.  GST_DEBUG=3,timing:5 ./voip-rpi
+7. sudo nano config.ini
+   należy wpisac poprawne adresy IP
+9. make
+10.  GST_DEBUG=3,timing:5 ./voip-rpi
