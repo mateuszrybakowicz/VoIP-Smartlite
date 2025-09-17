@@ -7,4 +7,6 @@
 7. sudo nano config.ini  
    należy wpisac poprawne adresy IP
 9. make
-10.  GST_DEBUG=3,timing:5 ./voip_rpi
+10.  GST_DEBUG=3,timing:5 ./voip_rpi  
+\
+aplikacja przetestowana z uzyciem behringera UMC202HD podlaczonym przez usb
