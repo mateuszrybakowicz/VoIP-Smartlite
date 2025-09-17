@@ -4,4 +4,4 @@
 5. git clone https://github.com/mateuszrybakowicz/VoIP-Smartlite.git
 6. cd VoIP-Smartlite/rpi
 7. make
-8.  GST_DEBUG=3,timing:5 ./VoIP-rpi
+8.  GST_DEBUG=3,timing:5 ./voip-rpi
