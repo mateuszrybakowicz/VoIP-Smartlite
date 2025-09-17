@@ -1,11 +1,44 @@
 #include <gst/gst.h>
 #include <gst/rtsp-server/rtsp-server.h>
+#include <stdio.h>
+#include <string.h>
 
 typedef struct {
     GstElement* pipeline;
     GMainLoop* loop;
     const char *name;
 } AppData;
+
+typedef struct {
+    char rpi_ip[64];
+    char windows_ip[64];
+    int send_port;
+    int recv_port;
+} Config;
+
+
+int load_config(const char *filename, Config *cfg) {
+    FILE *f = fopen(filename, "r");
+    if (!f) {
+        printf("Brak pliku konfiguracyjnego %s, używam domyślnych wartości.\n", filename);
+        strcpy(cfg->rpi_ip, "192.168.50.12");
+        strcpy(cfg->windows_ip, "192.168.50.124");
+        cfg->send_port = 5000;
+        cfg->recv_port = 5001;
+        return 0;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        if (strstr(line, "rpi_ip=")) sscanf(line, "rpi_ip=%63s", cfg->rpi_ip);
+        else if (strstr(line, "windows_ip=")) sscanf(line, "windows_ip=%63s", cfg->windows_ip);
+        else if (strstr(line, "send_port=")) sscanf(line, "send_port=%d", &cfg->send_port);
+        else if (strstr(line, "recv_port=")) sscanf(line, "recv_port=%d", &cfg->recv_port);
+    }
+
+    fclose(f);
+    return 1;
+}
 
 
 static gboolean bus_callback(GstBus* bus, GstMessage* msg, gpointer user_data) {
@@ -64,24 +97,35 @@ static gboolean bus_callback(GstBus* bus, GstMessage* msg, gpointer user_data) {
 
 
 int main(int argc, char *argv[]) {
+	Config cfg;
+	load_config("config.ini", &cfg);	
+
 	gst_init(&argc, &argv);
 
 	AppData sender = { 0 };
 	AppData receiver = { 0 };
+	gchar* launch_string_sender = NULL;
+	gchar* launch_string_receiver = NULL;
 	GMainLoop* loop = g_main_loop_new(NULL, FALSE);
 
-    	sender.pipeline = gst_parse_launch(
-        	"alsasrc device=hw:2,0 ! audioconvert ! audioresample ! "
-        	"audio/x-raw,format=S16BE,channels=1,rate=16000 ! "
-        	"rtpL16pay ! udpsink host=192.168.50.124 port=5000",
-        	NULL);
+	launch_string_sender = g_strdup_printf(
+		"alsasrc device=hw:2,0 ! audioconvert ! audioresample ! "
+    		"audio/x-raw,format=S16BE,channels=1,rate=16000 ! "
+    		"rtpL16pay ! udpsink host=%s port=%d",
+    		cfg.windows_ip, cfg.send_port
+	);
+
+	launch_string_receiver = g_strdup_printf(
+    		"udpsrc port=%d caps=\"application/x-rtp,media=audio,clock-rate=16000,encoding-name=L16,channels=1\" ! "
+    		"rtpjitterbuffer latency=20 ! rtpL16depay ! audioconvert ! audioresample ! alsasink sync=false",
+    		cfg.recv_port
+	);
+	
+    	sender.pipeline = gst_parse_launch(launch_string_sender, NULL);
 	sender.loop = loop;
 	sender.name = "RPI5_SENDER";
 
-	receiver.pipeline = gst_parse_launch(
-    		"udpsrc port=5001 caps=\"application/x-rtp,media=audio,clock-rate=16000,encoding-name=L16,channels=1\" ! "
-    		" rtpjitterbuffer latency=20 ! rtpL16depay ! audioconvert ! audioresample ! alsasink sync=false",
-    		NULL);
+	receiver.pipeline = gst_parse_launch(launch_string_receiver, NULL);
 	receiver.loop = loop;
 	receiver.name = "RPI5_RECEIVER";
 
