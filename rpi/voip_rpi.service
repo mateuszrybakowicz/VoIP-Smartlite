@@ -1,0 +1,14 @@
+[Unit]
+Description=VoIP Application for Raspberry Pi
+After=network.target
+
+[Service]
+ExecStart=/home/fs/VoIP-Smartlite/rpi/voip_rpi_script.sh
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=10
+User=fs
+
+[Install]
+WantedBy=multi-user.target
