@@ -5,6 +5,7 @@ instrukcje jak zainstalowac aplikacje na rpi, znajduja sie  w README.md w folder
 main.c pokazuje caly kod, ale moze byc nieaktualny. Najaktualniejsze pliki na PC znajduja sie w branchu master. Jeśli nie ma potrzeby zmiany kodu, lub go kompilowania wystarczy pobrac 
 najnowszy release na PC. Z moich doswiadczen wynika ze pobieranie moze sie wywalic i dziala z niskimi predkosciami, pobranie poprzez komende zalagodzilo sprawe, nalezy poprawic link tak aby w nazwie byl aktualny release  
 curl -L -O https://github.com/mateuszrybakowicz/VoIP-Smartlite/releases/download/v1.0.3/VoIP_1_0_3.zip  
+\
 Rozpakowac go, zaktualizowac plik config.ini (ustawic poprawne adresy IP). Na koniec wystarczy w zmiennych srodowiskowych dodac do PATH 
 ...\dist\gstreamer\bin.  
 \
