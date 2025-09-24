@@ -8,7 +8,11 @@
    należy wpisac poprawne adresy IP
 9. make
 10. sudo chmod +x /home/fs/VoIP-Smartlite/rpi/voip_rpi_script.sh
-11.  sudo nano /etc/systemd/system/voip_rpi.service
-12.  
-\
-aplikacja przetestowana z uzyciem behringera UMC202HD podlaczonym przez usb
+11. nalezy zmienic nazwe user w voip_rpi.service, nalezy tez pamietac ze nazwa usera jest zawarta w sciezce do pliku zaraz po /home
+12. sudo mv voip_rpi.service /etc/systemd/system
+13. sudo chmod +x /home/fs/VoIP-Smartlite/rpi/voip_rpi_script.sh
+14. sudo systemctl daemon-reload
+15. sudo systemctl enable voip_rpi.service
+16. sudo systemctl start voip_rpi.service  
+/
+aplikacja powinna sie otwierac sama po kazdym rebootcie
