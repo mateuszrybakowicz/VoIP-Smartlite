@@ -7,6 +7,8 @@
 7. sudo nano config.ini  
    należy wpisac poprawne adresy IP
 9. make
-10.  GST_DEBUG=3,timing:5 ./voip_rpi  
+10. sudo chmod +x /home/fs/VoIP-Smartlite/rpi/voip_rpi_script.sh
+11.  sudo nano /etc/systemd/system/voip_rpi.service
+12.  
 \
 aplikacja przetestowana z uzyciem behringera UMC202HD podlaczonym przez usb
