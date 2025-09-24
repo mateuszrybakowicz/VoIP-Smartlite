@@ -20,14 +20,14 @@ typedef struct {
 int load_config(const char *filename, Config *cfg) {
     FILE *f = fopen(filename, "r");
     if (!f) {
-        printf("Brak pliku konfiguracyjnego %s, używam domyślnych wartości.\n", filename);
+        printf("there is no sucha a file or direction %s, using deafult values instead.\n", filename);
         strcpy(cfg->rpi_ip, "192.168.50.12");
         strcpy(cfg->windows_ip, "192.168.50.124");
         cfg->send_port = 5000;
         cfg->recv_port = 5001;
         return 0;
     }
-
+    printf("config file has been opened properly");
     char line[256];
     while (fgets(line, sizeof(line), f)) {
         if (strstr(line, "rpi_ip=")) sscanf(line, "rpi_ip=%63s", cfg->rpi_ip);
@@ -98,7 +98,7 @@ static gboolean bus_callback(GstBus* bus, GstMessage* msg, gpointer user_data) {
 
 int main(int argc, char *argv[]) {
 	Config cfg;
-	load_config("config.ini", &cfg);	
+	load_config("/home/fs/VoIP-Smartlite/rpi/config.ini", &cfg);	
 
 	gst_init(&argc, &argv);
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
 
 	launch_string_receiver = g_strdup_printf(
     		"udpsrc port=%d caps=\"application/x-rtp,media=audio,clock-rate=16000,encoding-name=L16,channels=1\" ! "
-    		"rtpjitterbuffer latency=20 ! rtpL16depay ! audioconvert ! audioresample ! alsasink sync=false",
+    		"rtpjitterbuffer latency=20 ! rtpL16depay ! audioconvert ! audioresample ! alsasink device=hw:2,0 sync=false",
     		cfg.recv_port
 	);
 	
