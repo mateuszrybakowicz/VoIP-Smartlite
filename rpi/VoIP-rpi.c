@@ -2,6 +2,12 @@
 #include <gst/rtsp-server/rtsp-server.h>
 #include <stdio.h>
 #include <string.h>
+#include <gpiod.h>
+#include <glib.h>
+#include <unistd.h>
+#include <stdbool.h>
+
+
 
 typedef struct {
     GstElement* pipeline;
@@ -16,11 +22,34 @@ typedef struct {
     int recv_port;
 } Config;
 
+static gboolean gpio_callback(GIOChannel *source, GIOCondition condition, gpointer data) {
+    AppData *app = (AppData*) data;
+    GstElement* valve = gst_bin_get_by_name(GST_BIN(app->pipeline), "valve0");
+    struct gpiod_line_event event;
+    int fd = g_io_channel_unix_get_fd(source);
+
+    if (gpiod_line_event_read_fd(fd, &event) < 0) {
+        perror("Read event failed");
+        return TRUE;
+    }
+
+    if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE){
+        g_print("GPIO rising edge\n");
+	g_object_set(valve, "drop", FALSE, NULL);	
+    }
+    else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE){
+        g_print("GPIO falling edge\n");
+	g_object_set(valve, "drop", TRUE, NULL);
+    }
+    gst_object_unref(valve);
+
+    return TRUE;
+}
 
 int load_config(const char *filename, Config *cfg) {
     FILE *f = fopen(filename, "r");
     if (!f) {
-        printf("there is no sucha a file or direction %s, using deafult values instead.\n", filename);
+        printf("there is no such a file or direction %s, using deafult values instead.\n", filename);
         strcpy(cfg->rpi_ip, "192.168.50.12");
         strcpy(cfg->windows_ip, "192.168.50.124");
         cfg->send_port = 5000;
@@ -99,6 +128,14 @@ static gboolean bus_callback(GstBus* bus, GstMessage* msg, gpointer user_data) {
 int main(int argc, char *argv[]) {
 	Config cfg;
 	load_config("/home/fs/VoIP-Smartlite/rpi/config.ini", &cfg);	
+	struct gpiod_chip *chip;
+	struct gpiod_line *line;
+	int fd;
+
+	chip = gpiod_chip_open_by_name("gpiochip4");
+	line = gpiod_chip_get_line(chip, 17);        // GPIO17
+	gpiod_line_request_both_edges_events(line, "gpiod-glib");
+	fd = gpiod_line_event_get_fd(line);
 
 	gst_init(&argc, &argv);
 
@@ -107,9 +144,12 @@ int main(int argc, char *argv[]) {
 	gchar* launch_string_sender = NULL;
 	gchar* launch_string_receiver = NULL;
 	GMainLoop* loop = g_main_loop_new(NULL, FALSE);
+	GIOChannel *channel = g_io_channel_unix_new(fd);
+	g_io_channel_set_encoding(channel, NULL, NULL);
+	g_io_channel_set_buffered(channel, FALSE);
 
 	launch_string_sender = g_strdup_printf(
-		"alsasrc device=hw:2,0 ! audioconvert ! audioresample ! "
+		"alsasrc device=hw:2,0 ! valve drop=TRUE name=valve0 ! audioconvert ! audioresample ! "
     		"audio/x-raw,format=S16BE,channels=1,rate=16000 ! "
     		"rtpL16pay ! udpsink host=%s port=%d",
     		cfg.windows_ip, cfg.send_port
@@ -128,6 +168,8 @@ int main(int argc, char *argv[]) {
 	receiver.pipeline = gst_parse_launch(launch_string_receiver, NULL);
 	receiver.loop = loop;
 	receiver.name = "RPI5_RECEIVER";
+
+	g_io_add_watch(channel, G_IO_IN, gpio_callback, &sender);
 
     	GstBus* bus1 = gst_element_get_bus(sender.pipeline);
 	gst_bus_add_watch(bus1, bus_callback, &sender);
@@ -150,6 +192,8 @@ int main(int argc, char *argv[]) {
 	gst_object_unref(receiver.pipeline);
 	gst_object_unref(sender.pipeline);
 	g_main_loop_unref(loop);
+	g_io_channel_unref(channel);
+	gpiod_chip_close(chip);
 
     	return 0;
 }
