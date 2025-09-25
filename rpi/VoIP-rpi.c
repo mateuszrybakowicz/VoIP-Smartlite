@@ -34,12 +34,12 @@ static gboolean gpio_callback(GIOChannel *source, GIOCondition condition, gpoint
     }
 
     if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE){
-        g_print("GPIO rising edge\n");
-	g_object_set(valve, "drop", FALSE, NULL);	
+        //g_print("GPIO rising edge\n");
+		g_object_set(valve, "drop", FALSE, NULL);	
     }
     else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE){
-        g_print("GPIO falling edge\n");
-	g_object_set(valve, "drop", TRUE, NULL);
+        //g_print("GPIO falling edge\n");
+		g_object_set(valve, "drop", TRUE, NULL);
     }
     gst_object_unref(valve);
 
