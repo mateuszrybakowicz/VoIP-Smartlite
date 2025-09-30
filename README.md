@@ -14,7 +14,7 @@ aby wlaczyc aplikacje, nalezy uruchumic run_VoIP.bat i zezwolic na wszystko co t
 dodawanie aplikacji do autostartu windows 11:  
 -windows+R  
 -wpisujemy shell:startup  
--przenosimy do otwartego folderu SKROT do pliku run_VoIp.bat. 
+-przenosimy do otwartego folderu SKROT do pliku run_VoIp.bat  
 -warto sie upewnic w menedzerze zadan czy na pewno jest wlaczony autostart na tej aplikacji. 
 \
 aplikacja przetestowana z wpietym headsetem poprzez SoundBlastera usb
