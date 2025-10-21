@@ -15,4 +15,6 @@
 15. sudo systemctl enable voip_rpi.service
 16. sudo systemctl start voip_rpi.service  
 /
-aplikacja powinna sie otwierac sama po kazdym rebootcie
+aplikacja powinna sie otwierac sama po kazdym rebootcie  
+/
+aby zobaczyc logi: sudo journalctl -u voip_rpi.service
