@@ -4,7 +4,7 @@ SRC=VoIP-rpi.c
 
 OBJ=$(SRC:.c=.o)
 CFLAGS=`pkg-config --cflags gstreamer-1.0 gstreamer-rtsp-server-1.0 libgpiod`
-LIBS=`pkg-config --libs gstreamer-1.0 gstreamer-rtsp-server-1.0 libgpiod`
+LIBS=`pkg-config --libs gstreamer-1.0 gstreamer-rtsp-server-1.0 libgpiod ` -lmosquitto
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
