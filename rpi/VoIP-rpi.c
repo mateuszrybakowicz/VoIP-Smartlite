@@ -6,7 +6,9 @@
 #include <glib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <mosquitto.h>
 
+bool IsPTTPushed = false;
 
 
 typedef struct {
@@ -20,30 +22,31 @@ typedef struct {
     char windows_ip[64];
     int send_port;
     int recv_port;
+    char mqtt_ip[64];
 } Config;
 
-static gboolean gpio_callback(GIOChannel *source, GIOCondition condition, gpointer data) {
-    AppData *app = (AppData*) data;
-    GstElement* valve = gst_bin_get_by_name(GST_BIN(app->pipeline), "valve0");
-    struct gpiod_line_event event;
-    int fd = g_io_channel_unix_get_fd(source);
-
-    if (gpiod_line_event_read_fd(fd, &event) < 0) {
-        perror("Read event failed");
-        return TRUE;
+void on_connect(struct mosquitto *mosq, void *userdata, int rc) {
+    if (rc == 0) {
+        printf("connected to MQTT broker\n");
+        mosquitto_subscribe(mosq, NULL, "Koliber/radio/ptt", 0);
+    } else {
+        printf("failure of connection with MQTT: %d\n", rc);
     }
+}
 
-    if (event.event_type == GPIOD_LINE_EVENT_RISING_EDGE){
-        //g_print("GPIO rising edge\n");
-		g_object_set(valve, "drop", FALSE, NULL);	
-    }
-    else if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE){
-        //g_print("GPIO falling edge\n");
+void on_message(struct mosquitto *mosq, void *userdata, const struct mosquitto_message *msg) {
+    if (strcmp(msg->topic, "Koliber/radio/ptt") == 0) {
+        if (msg->payloadlen > 0) {
+	    AppData *app = (AppData*) userdata;
+    	    GstElement* valve = gst_bin_get_by_name(GST_BIN(app->pipeline), "valve0");
+            if (strcmp((char *)msg->payload, "True") == 0) {
+		g_object_set(valve, "drop", FALSE, NULL);
+            } else {
 		g_object_set(valve, "drop", TRUE, NULL);
+            }
+	    gst_object_unref(valve);
+        }
     }
-    gst_object_unref(valve);
-
-    return TRUE;
 }
 
 int load_config(const char *filename, Config *cfg) {
@@ -54,15 +57,17 @@ int load_config(const char *filename, Config *cfg) {
         strcpy(cfg->windows_ip, "192.168.50.124");
         cfg->send_port = 5000;
         cfg->recv_port = 5001;
+	strcpy(cfg->mqtt_ip, "10.88.88.88");
         return 0;
     }
-    printf("config file has been opened properly");
+    printf("config file has been opened properly\n");
     char line[256];
     while (fgets(line, sizeof(line), f)) {
         if (strstr(line, "rpi_ip=")) sscanf(line, "rpi_ip=%63s", cfg->rpi_ip);
         else if (strstr(line, "windows_ip=")) sscanf(line, "windows_ip=%63s", cfg->windows_ip);
         else if (strstr(line, "send_port=")) sscanf(line, "send_port=%d", &cfg->send_port);
         else if (strstr(line, "recv_port=")) sscanf(line, "recv_port=%d", &cfg->recv_port);
+	else if (strstr(line, "mqtt_ip=")) sscanf(line, "mqtt_ip=%63s", &cfg->mqtt_ip);
     }
 
     fclose(f);
@@ -128,14 +133,15 @@ static gboolean bus_callback(GstBus* bus, GstMessage* msg, gpointer user_data) {
 int main(int argc, char *argv[]) {
 	Config cfg;
 	load_config("/home/fs/VoIP-Smartlite/rpi/config.ini", &cfg);	
-	struct gpiod_chip *chip;
-	struct gpiod_line *line;
-	int fd;
+	
+	struct mosquitto *mosq = NULL;
 
-	chip = gpiod_chip_open_by_name("gpiochip4");
-	line = gpiod_chip_get_line(chip, 17);        // GPIO17
-	gpiod_line_request_both_edges_events(line, "gpiod-glib");
-	fd = gpiod_line_event_get_fd(line);
+	mosquitto_lib_init();
+	mosq = mosquitto_new("rpi_voip_client", true, NULL);
+	if (!mosq) {
+        	fprintf(stderr, "Mosquitto Initalization failure\n");
+        	return 1;
+	}
 
 	gst_init(&argc, &argv);
 
@@ -144,9 +150,6 @@ int main(int argc, char *argv[]) {
 	gchar* launch_string_sender = NULL;
 	gchar* launch_string_receiver = NULL;
 	GMainLoop* loop = g_main_loop_new(NULL, FALSE);
-	GIOChannel *channel = g_io_channel_unix_new(fd);
-	g_io_channel_set_encoding(channel, NULL, NULL);
-	g_io_channel_set_buffered(channel, FALSE);
 
 	launch_string_sender = g_strdup_printf(
 		"alsasrc device=hw:2,0 ! valve drop=TRUE name=valve0 ! audioconvert ! audioresample ! "
@@ -169,7 +172,15 @@ int main(int argc, char *argv[]) {
 	receiver.loop = loop;
 	receiver.name = "RPI5_RECEIVER";
 
-	g_io_add_watch(channel, G_IO_IN, gpio_callback, &sender);
+	mosquitto_username_pw_set(mosq, "simfactor", "simfactor");
+	mosquitto_connect_callback_set(mosq, on_connect);
+	mosquitto_user_data_set(mosq, &sender);
+	mosquitto_message_callback_set(mosq, on_message);
+
+	printf("Starting loop to conenct to MQTT\n");
+	while (mosquitto_connect(mosq, cfg.mqtt_ip, 1883, 60) != MOSQ_ERR_SUCCESS) {
+    		sleep(2);
+	}
 
     	GstBus* bus1 = gst_element_get_bus(sender.pipeline);
 	gst_bus_add_watch(bus1, bus_callback, &sender);
@@ -183,7 +194,8 @@ int main(int argc, char *argv[]) {
 	gst_element_set_state(sender.pipeline, GST_STATE_PLAYING);
     	g_print("Wysyłam RTP na windows(port 5000)\nodbieram RTP port 5001");
 
-    	g_main_loop_run(loop);
+    	mosquitto_loop_start(mosq);
+	g_main_loop_run(loop);
 
     	// Sprzątanie
 	g_print("Zatrzymywanie pipeline...\n");
@@ -192,8 +204,10 @@ int main(int argc, char *argv[]) {
 	gst_object_unref(receiver.pipeline);
 	gst_object_unref(sender.pipeline);
 	g_main_loop_unref(loop);
-	g_io_channel_unref(channel);
-	gpiod_chip_close(chip);
+	mosquitto_loop_stop(mosq, true);
+ 	mosquitto_disconnect(mosq);
+	mosquitto_destroy(mosq);
+	mosquitto_lib_cleanup();
 
     	return 0;
 }
