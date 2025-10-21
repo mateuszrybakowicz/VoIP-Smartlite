@@ -5,7 +5,7 @@
 5. git clone https://github.com/mateuszrybakowicz/VoIP-Smartlite.git
 6. cd VoIP-Smartlite/rpi
 7. sudo nano config.ini  
-   należy wpisac poprawne adresy IP
+   należy wpisac poprawne adresy IP dla pc oraz dla MQTT
 9. make
 10. sudo chmod +x /home/fs/VoIP-Smartlite/rpi/voip_rpi_script.sh
 11. nalezy zmienic nazwe user w voip_rpi.service, nalezy tez pamietac ze nazwa usera jest zawarta w sciezce do pliku zaraz po /home
