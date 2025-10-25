@@ -1,0 +1,26 @@
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.dll
+*.exe
+*.pdb
+*.ilk
+*.obj
+*.tlog
+*.lastbuildstate
+
+[Dd]ebug/
+[Rr]elease/
+x64/
+Win32/
+ARM/
+ARM64/
+build/
+.vs/
+ipch/
+dist/
+VoIP sma.5C237DE5/
+
+.DS_Store
+Thumbs.db
