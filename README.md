@@ -2,7 +2,7 @@
 instrukcje jak zainstalowac aplikacje na rpi, znajduja sie  w README.md w folderze rpi  
 \
 \
-main.c pokazuje caly kod, ale moze byc nieaktualny. Najaktualniejsze pliki na PC znajduja sie w branchu master. Jeśli nie ma potrzeby zmiany kodu, lub go kompilowania wystarczy pobrac 
+Na PC nie ma potrzeby pobierania calego repozytorium. Nalezy pobrac
 najnowszy release na PC. Z moich doswiadczen wynika ze pobieranie moze sie wywalic i dziala z niskimi predkosciami, pobranie poprzez komende zalagodzilo sprawe, nalezy poprawic link tak aby w nazwie byl aktualny release  
 curl -L -O https://github.com/mateuszrybakowicz/VoIP-Smartlite/releases/download/v1.0.4/VoIP_1_0_4.zip  
 \
