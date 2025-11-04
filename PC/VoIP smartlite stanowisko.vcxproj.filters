@@ -29,9 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\config.ini" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -41,5 +38,8 @@
     <ClInclude Include="include\keyboard_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\config.ini" />
   </ItemGroup>
 </Project>

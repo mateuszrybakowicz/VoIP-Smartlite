@@ -25,12 +25,12 @@
     <ClCompile Include="src\keyboard_hook.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\config.ini" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\gstreamer_handler.h" />
     <ClInclude Include="include\keyboard_hook.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\config.ini" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
@@ -94,7 +94,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;C:\Program Files\gstreamer\1.0\msvc_x86_64\include\glib-2.0;C:\Program Files\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Mateusz\Desktop\VoIP-Smartlite\PC\include;C:\Program Files\gstreamer\1.0\msvc_x86_64\include\glib-2.0\glib;C:\Program Files\gstreamer\1.0\msvc_x86_64\include\glib-2.0;C:\Program Files\gstreamer\1.0\msvc_x86_64\include\gstreamer-1.0;C:\Program Files\gstreamer\1.0\msvc_x86_64\lib\glib-2.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -1,0 +1,50 @@
+0:00:00.021482500  9872 0000024F564A4580 WARN      GST_PLUGIN_LOADING gstpluginloader-win32.c:1109:gst_plugin_loader_new: Couldn't create helper process
+0:00:00.021753100  9872 0000024F564A4580 WARN            GST_REGISTRY gstregistry.c:1164:gst_registry_scan_plugin_file: Failed starting plugin scanner. Scanning in-process
+0:00:02.465833900  9872 0000024F564A4580 WARN         d3d11debuglayer gstd3d11device.cpp:779:gst_d3d11_device_dispose:<d3d11device0> DXGIInfoQueue: Live ID3D11Device at 0x0000024F580F6CA0, Refcount: 3
+0:00:02.478866600  9872 0000024F564A4580 WARN             d3d11device gstd3d11device.cpp:1372:gst_d3d11_device_get_video_device_handle: D3D11 call failed: 0x80004002, Taki interfejs nie jest obsˆugiwany.
+0:00:02.479161400  9872 0000024F564A4580 WARN         d3d11debuglayer gstd3d11device.cpp:779:gst_d3d11_device_dispose:<d3d11device1> DXGIInfoQueue: Live ID3D11Device at 0x0000024F580F6CA0, Refcount: 3
+0:00:02.781538300  9872 0000024F564A4580 WARN         d3d11debuglayer gstd3d11device.cpp:779:gst_d3d11_device_dispose:<d3d11device2> DXGIInfoQueue: Live ID3D11Device at 0x0000024F5D92A560, Refcount: 3
+0:00:04.745105900  9872 0000024F564A4580 WARN                 default gstjackloader.c:187:gst_jack_load_library: Could not open library libjack64.dll, 'libjack64.dll': Nie mo¾na odnale«† okre˜lonego moduˆu.
+0:00:04.745276200  9872 0000024F564A4580 WARN                 default gstjack.c:108:plugin_init: Failed to load jack library
+0:00:04.825494400  9872 0000024F564A4580 WARN                  ladspa gstladspa.c:509:plugin_init:<plugin366> no LADSPA plugins found, check LADSPA_PATH
+0:00:05.367496400  9872 0000024F5E297950 WARN             mftransform gstmftransform.cpp:513:gst_mf_transform_thread_func:<mftransform3> No available device at index 0
+0:00:05.381056500  9872 0000024F5E2979F0 WARN             mftransform gstmftransform.cpp:513:gst_mf_transform_thread_func:<mftransform4> No available device at index 0
+0:00:05.401752000  9872 0000024F564A4580 WARN         d3d11debuglayer gstd3d11device.cpp:779:gst_d3d11_device_dispose:<d3d11device3> DXGIInfoQueue: Live ID3D11Device at 0x0000024F5DD66A40, Refcount: 3
+0:00:05.418789600  9872 0000024F5E297DB0 WARN             mftransform gstmftransform.cpp:513:gst_mf_transform_thread_func:<mftransform7> No available device at index 1
+0:00:05.426156800  9872 0000024F5E297E00 WARN             mftransform gstmftransform.cpp:513:gst_mf_transform_thread_func:<mftransform9> No available device at index 1
+0:00:05.429185700  9872 0000024F5E297E00 WARN             mftransform gstmftransform.cpp:921:gst_mf_transform_open_internal: MediaFoundation call failed: 0x80004002, Taki interfejs nie jest obsˆugiwany.
+0:00:05.429323900  9872 0000024F5E297E00 WARN             mftransform gstmftransform.cpp:922:gst_mf_transform_open_internal:<mftransform10> ICodecAPI is unavailable
+0:00:05.430787900  9872 0000024F5E12B180 WARN             mftransform gstmftransform.cpp:921:gst_mf_transform_open_internal: MediaFoundation call failed: 0x80004002, Taki interfejs nie jest obsˆugiwany.
+0:00:05.430930700  9872 0000024F5E12B180 WARN             mftransform gstmftransform.cpp:922:gst_mf_transform_open_internal:<mftransform11> ICodecAPI is unavailable
+0:00:05.869281300  9872 0000024F564A4580 WARN               cudanvrtc gstcudanvrtc.cpp:163:gst_cuda_nvrtc_load_library_once: Could not open nvrtc library 'nvrtc64_90_0.dll': Nie mo¾na odnale«† okre˜lonego moduˆu.
+0:00:06.075225900  9872 0000024F564A4580 WARN            nvav1encoder gstnvav1encoder.cpp:1429:gst_nv_av1_encoder_create_class_data:<d3d11device4> New preset is not supported
+0:00:06.075540000  9872 0000024F564A4580 WARN         d3d11debuglayer gstd3d11device.cpp:779:gst_d3d11_device_dispose:<d3d11device4> DXGIInfoQueue: Live ID3D11Device at 0x0000024F64D14570, Refcount: 3
+0:00:06.101053000  9872 0000024F564A4580 WARN            nvav1encoder gstnvav1encoder.cpp:1429:gst_nv_av1_encoder_create_class_data:<cudacontext0> New preset is not supported
+0:00:06.533894900  9872 0000024F564A4580 WARN      GST_PLUGIN_LOADING gstplugin.c:887:_priv_gst_plugin_load_file_for_registry: module_open failed: Nie mo¾na odnale«† okre˜lonego moduˆu.
+This usually means Windows was unable to find a DLL dependency of the plugin. Please check that PATH is correct.
+You can run 'dumpbin -dependents' (provided by the Visual Studio developer prompt) to list the DLL deps of any DLL.
+There are also some third-party GUIs to list and debug DLL dependencies recursively.
+
+(VoIP.exe:9872): GStreamer-WARNING **: 10:12:38.775: Failed to load plugin 'C:\Users\Mateusz\Desktop\VoIP-Smartlite\PC\dist\gstreamer\lib\gstreamer-1.0\gstpython.dll': Nie mo¾na odnale«† okre˜lonego moduˆu.
+This usually means Windows was unable to find a DLL dependency of the plugin. Please check that PATH is correct.
+You can run 'dumpbin -dependents' (provided by the Visual Studio developer prompt) to list the DLL deps of any DLL.
+There are also some third-party GUIs to list and debug DLL dependencies recursively.
+0:00:09.314170400  9872 0000024F564A4580 WARN      GST_PLUGIN_LOADING gstplugin.c:887:_priv_gst_plugin_load_file_for_registry: module_open failed: Nie mo¾na odnale«† okre˜lonego moduˆu.
+This usually means Windows was unable to find a DLL dependency of the plugin. Please check that PATH is correct.
+You can run 'dumpbin -dependents' (provided by the Visual Studio developer prompt) to list the DLL deps of any DLL.
+There are also some third-party GUIs to list and debug DLL dependencies recursively.
+
+(VoIP.exe:9872): GStreamer-WARNING **: 10:12:41.554: Failed to load plugin 'C:\Users\Mateusz\Desktop\VoIP-Smartlite\PC\dist\gstreamer\lib\gstreamer-1.0\gstpython.dll': Nie mo¾na odnale«† okre˜lonego moduˆu.
+This usually means Windows was unable to find a DLL dependency of the plugin. Please check that PATH is correct.
+You can run 'dumpbin -dependents' (provided by the Visual Studio developer prompt) to list the DLL deps of any DLL.
+There are also some third-party GUIs to list and debug DLL dependencies recursively.
+full-duplex communication has been established
+PC->RPI at port 5001
+RPI->PC at port 5000
+[WINDOWS_RECEIVER] Pipeline state changed from NULL to READY
+[WINDOWS_SENDER] Pipeline state changed from NULL to READY
+[WINDOWS_RECEIVER] Pipeline state changed from READY to PAUSED
+0:00:09.367193800 [WINDOWS_SENDER] Pipeline state changed from READY to PAUSED
+ 9872 0000024F57EF9BD0 [WINDOWS_SENDER] Pipeline state changed from PAUSED to PLAYING
+FIXME                default gstutils.c:4170:gst_element_decorate_stream_id_internal:<wasapisrc0> Creating random stream-id, consider implementing a deterministic way of creating a stream-id
+^C

@@ -15,7 +15,7 @@ boolean IsPTTPushed = false;
 Config cfg;
 
 int main(int argc, char* argv[]) {
-    load_config("config.ini", &cfg);
+    load_config("src/config.ini", &cfg);
     HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, KeyLoop, NULL, 0, NULL);
 
     gstreamer_create_and_run(&cfg);
